@@ -1,0 +1,93 @@
+.App-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #ccc;
+  padding: 0.5rem 2rem;
+}
+
+.App-nav {
+  display: flex;
+  gap: 1rem;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.App-nav li {
+  flex: initial;
+}
+
+.App-nav-cart-icon {
+  width: 1rem;
+  height: 1rem;
+  vertical-align: bottom;
+}
+
+.App-main {
+  padding: 2rem;
+}
+
+.App-product, .App-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.App-product + .App-product {
+  margin-top: 1rem;
+}
+
+.App-product-info {
+  grid-column: span 4 / span 4;
+  display: flex;
+  gap: 1rem;
+}
+
+.App-product-icon {
+  flex: none;
+  height: 2rem;
+  width: 2rem;
+}
+
+.App-product-details {
+  flex-grow: 1;
+}
+
+.App-product-name {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.App-product-cart {
+  grid-column: span 2 / span 2;
+  display: flex;
+  gap: 1rem;
+}
+
+.App-product-cart div {
+  flex: 1 1 0%;
+  flex-grow: 1;
+}
+
+.App-righter {
+  grid-column-start: 5;
+  grid-column-end: span 2;
+}
+
+.App-rightest {
+  grid-column-start: 6;
+  grid-column-end: span 1;
+}
+
+.App-flex {
+  display: flex;
+  gap: 1rem;
+}
+
+.App-flex-col {
+  flex: 1 1 0%;
+  flex-grow: 1;
+}
