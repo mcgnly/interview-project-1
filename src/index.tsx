@@ -1,12 +1,36 @@
+import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from '@apollo/client';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
+import { setContext } from '@apollo/client/link/context';
+
+const httpLink = createHttpLink({
+  uri: `${process.env.REACT_APP_HOST}/graphql`,
+});
+
+const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        authorization: `Token ${process.env.REACT_APP_SECRET}`,
+      }
+    }
+  });
+
+const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: authLink.concat(httpLink),
+  });
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+      <ApolloProvider client={client}>
+
+<App />
+
+</ApolloProvider>,
   </React.StrictMode>,
   document.getElementById('root')
 );

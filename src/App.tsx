@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
+    BrowserRouter as Router, Link, Route, Switch
 } from "react-router-dom";
 import './App.css';
-
-const HOST = "https://secret-shore-94903.herokuapp.com";
 
 function formatCentsToDollars(cents: number): string {
   if (cents < 10) {
@@ -20,6 +15,41 @@ function formatCentsToDollars(cents: number): string {
   return `$${d}.${c}`;
 };
 
+const GET_PRODUCTS = gql`
+  query
+    {
+      products(first:10) {
+	nodes {
+        name,
+        priceCents,
+        imageSrc}
+      }
+    }
+`;
+
+const CREATE_CART = gql`
+  mutation CreateCart($createCartInput:CreateCartInput!){
+    createCart(input: $createCartInput){
+      cart{
+        cartItems{
+          product{name, priceCents, imageSrc}
+        }
+      }
+    }
+  }
+`;
+const ADD_ITEMS_TO_CART = gql`
+  mutation CreateCart($createCartInput:CreateCartInput!){
+    createCart(input: $createCartInput){
+      cart{
+        cartItems{
+          product{name, priceCents, imageSrc}
+        }
+      }
+    }
+  }
+`;
+
 function App() {
   const placeholderProduct = {
     id: 0,
@@ -27,23 +57,28 @@ function App() {
     name: "Loading...",
     priceCents: 0,
   }
-  const [products, setProducts] = useState([placeholderProduct]);
 
-  function loadProducts() {
-    const request = fetch(
-      `${HOST}/api/v1/products.json`,
-      {
-        headers: {
-        },
-      }
-    );
+const { loading, error, data } = useQuery(GET_PRODUCTS);
 
-    request
-      .then(response => response.json())
-      .then(data => setProducts(data["data"]))
-  }
+const products = data?.products?.nodes;
 
-  useEffect(loadProducts, []);
+if (loading) return (<div className="App-product" key={placeholderProduct["id"]}>
+<div className="App-product-info">
+  <div className="App-product-icon"><img src={`${process.env.REACT_APP_HOST}${placeholderProduct["imageSrc"]}`} alt="" /></div>
+  <div className="App-product-details">
+    <h1 className="App-product-name">{placeholderProduct["name"]}</h1>
+    {formatCentsToDollars(placeholderProduct["priceCents"])}
+  </div>
+</div>
+<div className="App-product-cart">
+  <div></div>
+  <div>
+    <button disabled>Add to cart</button>
+  </div>
+</div>
+</div>);
+
+if (error) return <p>Error</p>;
 
   return (
     <Router>
@@ -81,17 +116,17 @@ function App() {
   );
 }
 
-function Cart(props) {
+function Cart(props:any) {
   const products = props.products;
   let cartItems = JSON.parse(JSON.stringify(products)).sort(() => 0.5 - Math.random()).slice(0, 7);
-  cartItems.forEach((cartItem, index) => cartItem["quantity"] = index + 1);
+  cartItems.forEach((cartItem:any, index:number) => cartItem["quantity"] = index + 1);
 
   return (
     <div className="App-product-catalog">
-      {cartItems.map((cartItem) =>
+      {cartItems.map((cartItem:any) =>
         <div className="App-product" key={cartItem["id"]}>
           <div className="App-product-info">
-            <div className="App-product-icon"><img src={`${HOST}${cartItem["imageSrc"]}`} alt="" /></div>
+            <div className="App-product-icon"><img src={`${process.env.REACT_APP_HOST}${cartItem["imageSrc"]}`} alt="" /></div>
             <div className="App-product-details">
               <h1 className="App-product-name">{cartItem["name"]}</h1>
               {formatCentsToDollars(cartItem["priceCents"])}
@@ -117,7 +152,7 @@ function Cart(props) {
               Subtotal:
             </div>
             <div className="App-flex-col">
-              {formatCentsToDollars(cartItems.map(cartItem => cartItem["quantity"] * cartItem["priceCents"]).reduce((a, b) => a + b, 0))}
+              {formatCentsToDollars(cartItems.map((cartItem:any) => cartItem["quantity"] * cartItem["priceCents"]).reduce((a:any, b:any) => a + b, 0))}
             </div>
           </div>
         </div>
@@ -126,45 +161,16 @@ function Cart(props) {
   );
 }
 
-function Catalog(props) {
+function Catalog(props:any) {
   const products = props.products;
-
-  function addToCart(cartId, productId, quantity) {
-    const requestBody = {
-      productId: productId,
-      quantity: quantity,
-    };
-    const request = fetch(
-      `${HOST}/api/v1/carts/${cartId}/cart_items.json`,
-      {
-        method: "POST",
-        body: JSON.stringify(requestBody),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    request
-      .then(function (response) {
-        if (!response.ok) {
-          throw Error(`Unsuccessful response: ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then(function (json) {
-        console.log(json);
-        return json;
-      })
-      .catch(error => console.log(error));
-  }
+  const [addToCart, { data:addToCartRes, loading:addToCartLoading, error:addToCartError }] = useMutation(ADD_ITEMS_TO_CART);
 
   return (
     <div className="App-product-catalog">
-      {products.map((product) =>
+      {products.map((product:any) =>
         <div className="App-product" key={product["id"]}>
           <div className="App-product-info">
-            <div className="App-product-icon"><img src={`${HOST}${product["imageSrc"]}`} alt="" /></div>
+            <div className="App-product-icon"><img src={`${process.env.REACT_APP_HOST}${product["imageSrc"]}`} alt="" /></div>
             <div className="App-product-details">
               <h1 className="App-product-name">{product["name"]}</h1>
               {formatCentsToDollars(product["priceCents"])}
@@ -173,7 +179,10 @@ function Catalog(props) {
           <div className="App-product-cart">
             <div></div>
             <div>
-              <button onClick={addToCart.bind(this, undefined, product["id"], 1)}>Add to cart</button>
+              <button onClick={
+                ()=>{
+                    console.log('implement Add to Cart here')
+              }}>Add to cart</button>
             </div>
           </div>
         </div>
