@@ -6,16 +6,18 @@ import {
     UPDATE_QUANTITIES_IN_CART
 } from "../mutations";
 import { CartItem } from '../types';
-import { formatCentsToDollars } from "../utils";
+import { formatCentsToDollars, findMinOrderCentsValue, findMaxItems, findBatchSize } from "../utils";
 
 export const SingleCartItem = ({
   cartId,
   clientMutationId,
   cartItem,
+  tooSmall
 }: {
   cartId: string;
   clientMutationId: string;
   cartItem: CartItem;
+  tooSmall: boolean;
 }) => {
   const [quantity, setQuantity] = React.useState(cartItem.quantity);
   const [removeFromCart] = useMutation(REMOVE_ITEMS_FROM_CART);
@@ -34,6 +36,17 @@ export const SingleCartItem = ({
     setQuantity(e.target.value);
   };
 
+  const DropdownOptions=()=>{
+    const batchSize = findBatchSize((cartItem.product["name"]))
+    const options = [];
+    for (let i = batchSize; i <= findMaxItems(cartItem.product["name"]); i=i+batchSize) {
+        options.push(<option key={`${cartItem.product["name"]}-${i}`} value={i}>{i}</option>)
+    }
+    return <>
+    {options}
+    </>
+  }
+
   return (
     <div className="App-product" key={cartItem.product["id"]}>
       <div className="App-product-info">
@@ -44,6 +57,7 @@ export const SingleCartItem = ({
           />
         </div>
         <div className="App-product-details">
+          {tooSmall&&<h1 className="App-product-warning">Please Increase your order to meet the minimum value of {formatCentsToDollars(findMinOrderCentsValue(cartItem.product["name"]))}</h1>}
           <h1 className="App-product-name">{cartItem.product["name"]}</h1>
           {formatCentsToDollars(cartItem.product["priceCents"])}
         </div>
@@ -54,16 +68,7 @@ export const SingleCartItem = ({
           <div className="App-flex-col">
         <div>
           <select value={quantity} onChange={handleQtyUpdate}>
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
-            <option value={4}>4</option>
-            <option value={5}>5</option>
-            <option value={6}>6</option>
-            <option value={7}>7</option>
-            <option value={8}>8</option>
-            <option value={9}>9</option>
-            <option value={10}>10</option>
+            <DropdownOptions />
           </select>
         </div>
 

@@ -3,7 +3,7 @@ import "../App.css";
 import { SingleCartItem } from "../components/SingleCartItem";
 import { CREATE_ORDER } from "../mutations";
 import { Cart as CartType, CartItem } from '../types';
-import { formatCentsToDollars } from "../utils";
+import { formatCentsToDollars, isOrderTooSmall } from "../utils";
 
 export const Cart = ({
   cartId,
@@ -59,6 +59,7 @@ export const Cart = ({
             cartItem={cartItem}
             clientMutationId={clientMutationId}
             cartId={cartId}
+            tooSmall = {isOrderTooSmall(cartItem.product.name, cartItem.product.priceCents, cartItem.quantity)}
           />
         ))
       ) : (

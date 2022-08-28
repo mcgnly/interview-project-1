@@ -3,37 +3,40 @@ import "../App.css";
 import { SingleProduct } from "../components/SingleProduct";
 import { ADD_ITEMS_TO_CART } from "../mutations";
 import { GET_PRODUCTS } from "../queries";
-import { Cart, CartItem, Product } from '../types';
-import { formatCentsToDollars, placeholderProduct } from "../utils";
+import { Cart, CartItem, Product } from "../types";
+import {
+  isImpossibleToOrder,
+  placeholderProduct,
+  findBatchSize,
+} from "../utils";
 
 export const Catalog = ({
   cartId,
   clientMutationId,
-  cartData
+  cartData,
 }: {
   cartId: string;
   clientMutationId: string;
   cartData: Cart;
 }) => {
   const { loading, error, data, fetchMore } = useQuery(GET_PRODUCTS);
-  const [
-    addToCart,
-  ] = useMutation(ADD_ITEMS_TO_CART);
+  const [addToCart] = useMutation(ADD_ITEMS_TO_CART);
 
   if (loading) return <SingleProduct product={placeholderProduct} />;
-
   if (error) return <p>{error}</p>;
 
-  const {nodes, pageInfo} = data?.products;
-  const findInCart = (productId:number|string)=>{
-    const productsInCart = cartData?.cartItems.map((item:CartItem)=>item.product.id);
+  const { nodes, pageInfo } = data?.products;
+  const findInCart = (productId: number | string) => {
+    const productsInCart = cartData?.cartItems.map(
+      (item: CartItem) => item.product.id
+    );
     return productsInCart.includes(productId);
-  }
+  };
 
-  const onLoadMore=() =>{
+  const onLoadMore = () => {
     fetchMore({
       variables: {
-        cursor: pageInfo.endCursor
+        cursor: pageInfo.endCursor,
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
         const newEdges = fetchMoreResult.products.edges;
@@ -47,53 +50,42 @@ export const Catalog = ({
                 __typename: previousResult.products.__typename,
                 edges: [...previousResult.products.edges, ...newEdges],
                 nodes: [...previousResult.products.nodes, ...newNodes],
-                pageInfo
-              }
+                pageInfo,
+              },
             }
           : previousResult;
-      }
-    })}
+      },
+    });
+  };
   return (
     <div className="App-product-catalog">
       {nodes.map((product: Product) => (
-        <div className="App-product" key={product["id"]}>
-          <div className="App-product-info">
-            <div className="App-product-icon">
-              <img
-                src={`${process.env.REACT_APP_HOST}${product["imageSrc"]}`}
-                alt=""
-              />
-            </div>
-            <div className="App-product-details">
-              <h1 className="App-product-name">{product["name"]}</h1>
-              {formatCentsToDollars(product["priceCents"])}
-            </div>
-          </div>
-          <div className="App-product-cart">
-            <div></div>
-            <div>
-              <button
-              disabled={findInCart(product["id"])}
-                onClick={() => {
-                  addToCart({
-                    variables: {
-                      addToCartInput: {
-                        clientMutationId,
-                        cartId,
-                        cartItems: {
-                          productId: product["id"],
-                          quantity: 1,
-                        },
+        <>
+          {isImpossibleToOrder(
+            product["name"],
+            product["priceCents"]
+          ) ? null : (
+            <SingleProduct
+              key={product.id}
+              product={product}
+              alreadyInCart={findInCart(product["id"])}
+              handleAddToCart={() =>
+                addToCart({
+                  variables: {
+                    addToCartInput: {
+                      clientMutationId,
+                      cartId,
+                      cartItems: {
+                        productId: product["id"],
+                        quantity: findBatchSize(product["name"]),
                       },
                     },
-                  });
-                }}
-              >
-                Add to cart
-              </button>
-            </div>
-          </div>
-        </div>
+                  },
+                })
+              }
+            />
+          )}
+        </>
       ))}
       <button onClick={onLoadMore}>Load More</button>
     </div>
