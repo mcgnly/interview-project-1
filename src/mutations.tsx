@@ -56,6 +56,30 @@ export const REMOVE_ITEMS_FROM_CART = gql`
   }
 `;
 
+export const CREATE_ORDER = gql`
+  mutation CreateOrder(
+    $createOrderInput: CreateOrderInput!
+  ) {
+    createOrder(input: $createOrderInput) {
+      errors {
+        message
+      }
+        order {
+            createdAt
+            id
+            totalCents
+            orderLines {
+                name
+                quantity
+                imageSrc
+                id
+                priceCents
+            }
+        }
+    }
+  }
+`;
+
 export const UPDATE_QUANTITIES_IN_CART = gql`
   mutation UpdateCartItemsQuantities(
     $updateCartItemsQuantitiesInput: UpdateCartItemsQuantitiesInput!

@@ -22,15 +22,15 @@ yarn start
 
 
 Challenges:
-- Get the cart and navbar working
 - paginated endpoint
 - Style the site
 - Vendor rules
 - Implement client-side search of product names
 
 Todo:
-- get cart endpoints working to create, fetch
-- cart endpoints to add, remove, update
-- dropdowns
+- disable add btn if already in cart
+- provide cart to all pages instead of pulling it per pg
+- provide way to clear cart and generate new one on submit
+
 
 
