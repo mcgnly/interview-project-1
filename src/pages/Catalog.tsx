@@ -26,6 +26,7 @@ export const Catalog = ({
   if (error) return <p>{error}</p>;
 
   const { nodes, pageInfo } = data?.products;
+
   const findInCart = (productId: number | string) => {
     const productsInCart = cartData?.cartItems.map(
       (item: CartItem) => item.product.id
@@ -57,6 +58,12 @@ export const Catalog = ({
       },
     });
   };
+
+//   for sure not the most elegant way to load everything!
+  if (pageInfo.hasNextPage) {
+    onLoadMore();
+  }
+
   return (
     <div className="App-product-catalog">
       {nodes.map((product: Product) => (
@@ -87,7 +94,6 @@ export const Catalog = ({
           )}
         </>
       ))}
-      <button onClick={onLoadMore}>Load More</button>
     </div>
   );
 };

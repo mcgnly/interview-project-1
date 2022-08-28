@@ -26,9 +26,8 @@ export const SingleProduct = ({
         </div>
       </div>
       <div className="App-product-cart">
-        <div></div>
         <div>
-          <button disabled={alreadyInCart} onClick={handleAddToCart}>
+          <button disabled={alreadyInCart} onClick={handleAddToCart} className="Add-to-cart-btn">
             Add to cart
           </button>
         </div>
