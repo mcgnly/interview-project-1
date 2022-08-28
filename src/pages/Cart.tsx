@@ -1,60 +1,63 @@
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import "../App.css";
 import { SingleCartItem } from "../components/SingleCartItem";
-import { SingleProduct } from "../components/SingleProduct";
 import { CREATE_ORDER } from "../mutations";
-import { GET_CART } from "../queries";
-import { formatCentsToDollars, placeholderProduct } from "../utils";
+import { formatCentsToDollars } from "../utils";
 
 export const Cart = ({
   cartId,
   clientMutationId,
+  cartData,
+  resetClientMutationId
 }: {
   cartId: string;
   clientMutationId: string;
+  cartData: any;
+  resetClientMutationId: any;
 }) => {
-  const { loading, error, data } = useQuery(GET_CART, {
-    variables: { cartId },
-  });
-
   const [
     createOrder,
     {
       data: createOrderRes,
-      loading: createOrderLoading,
       error: createOrderError,
     },
   ] = useMutation(CREATE_ORDER);
 
-  const returnType = data?.cart?.__typename;
-  const cartItems = data?.cart?.cartItems;
+  const cartItems = cartData? cartData.cart?.cartItems:[];
   const totalCents = cartItems
     .map(
       (cartItem: any) => cartItem["quantity"] * cartItem.product["priceCents"]
     )
     .reduce((a: any, b: any) => a + b, 0);
 
-    const handleCreateOrder = () => {
-        createOrder({
-            variables: {
-              createOrderInput: {
-                clientMutationId,
-                orderAttributes: {
-                  totalCents,
-                  cartId,
-                },
-              },
-            },
-          });
-          alert(`Order for ${formatCentsToDollars(totalCents)} created! Thank you for shopping at Katie's Super Cool Coffee. `);
-        }
+  const handleCreateOrder = () => {
+    createOrder({
+      variables: {
+        createOrderInput: {
+          clientMutationId,
+          orderAttributes: {
+            totalCents,
+            cartId,
+          },
+        },
+      },
+    });
 
-  if (loading) return <SingleProduct product={placeholderProduct} />;
-  if (error) return <p>Error: {error.message}</p>;
+    if (createOrderRes) {
+        alert(
+          `Order for ${formatCentsToDollars(
+            totalCents
+          )} created! Thank you for shopping at Katie's Super Cool Coffee. `
+        );
+        resetClientMutationId();
+    }
+    if (createOrderError) {
+      alert(createOrderError.message);
+    }
+  };
 
   return (
     <div className="App-product-catalog">
-      {returnType !== "Cart" && <p>{data?.cart?.message}</p>}
       {cartItems && cartItems.length ? (
         cartItems?.map((cartItem: any) => (
           <SingleCartItem
@@ -84,11 +87,7 @@ export const Cart = ({
           <div className="App-flex">
             <div className="App-flex-col"></div>
             <div className="App-flex-col">
-              <button
-                onClick={handleCreateOrder}
-              >
-                Confirm
-              </button>
+              <button onClick={handleCreateOrder}>Confirm</button>
             </div>
           </div>
         </div>

@@ -9,9 +9,11 @@ import { SingleProduct } from "../components/SingleProduct";
 export const Catalog = ({
   cartId,
   clientMutationId,
+  cartData
 }: {
   cartId: string;
   clientMutationId: string;
+  cartData: any;
 }) => {
   const { loading, error, data } = useQuery(GET_PRODUCTS);
   const products = data?.products?.nodes;
@@ -22,6 +24,11 @@ export const Catalog = ({
   if (loading) return <SingleProduct product={placeholderProduct} />;
 
   if (error) return <p>Error</p>;
+
+  const findInCart = (productId:any)=>{
+    const productsInCart = cartData?.cart?.cartItems.map((item:any)=>item.product.id);
+    return productsInCart.includes(productId);
+  }
 
   return (
     <div className="App-product-catalog">
@@ -43,6 +50,7 @@ export const Catalog = ({
             <div></div>
             <div>
               <button
+              disabled={findInCart(product["id"])}
                 onClick={() => {
                   addToCart({
                     variables: {

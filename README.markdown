@@ -27,10 +27,6 @@ Challenges:
 - Vendor rules
 - Implement client-side search of product names
 
-Todo:
-- disable add btn if already in cart
-- provide cart to all pages instead of pulling it per pg
-- provide way to clear cart and generate new one on submit
 
 
 
