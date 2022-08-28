@@ -1,19 +1,22 @@
 # Odeko Checkout interview project: Katie McGinley
 
 ## Instructions
-To run this project, you must generate a client secret from (https://secret-shore-94903.herokuapp.com/accounts/2903b0e1-7446-4d3e-9018-901b01d43cb5)[here], or use a previously generated one.
+To run this project, you must generate a client secret from [here](https://secret-shore-94903.herokuapp.com/accounts/2903b0e1-7446-4d3e-9018-901b01d43cb5), or use a previously generated one.
 
-Please note: this project runs with node v16.
+-----
+ Please note: this project runs with node v16.
 
-Make a copy of the .env.example, named .env, and replace the placeholder for the client secret with the one you generated.
+-----
 
-If you have not yet installed the dependencies, run the following command:
+1. Make a copy of the .env.example, named .env, and replace the placeholder for the client secret with the one you generated.
+
+2. If you have not yet installed the dependencies, run the following command:
 
 ```bash
 yarn
 ```
 
-You can then use the following command to start the app:
+3. You can then use the following command to start the app:
 
 ```bash
 yarn start
@@ -31,11 +34,11 @@ If this were in the context of work, rather than a limited time project, there a
 In terms of time:
 I definitely did spend more than 3 hours on this, but largely because I'm a bit rusty with graphQL, and hadn't used this type of pagination before. I basically got all of the basic stuff done inside the 3 hours once I got back into gql (and particularly how to format variables, somehow I tend to trip on that). After that, the pagination topic took a bit longer (and I didn't end up loading everything in the most elegant way), but the vendor rules didn't take very long because they weren't gql specific. I could have done this faster using REST, which I'm aware was an option, but I know you use gql so I wanted to give that a shot even if it took a bit longer due to debugging.
 
-Challenges:
+## Challenges:
 - [x] Deal with paginated data
-- Style the site
+- [ ] Style the site
 - [x] Vendor rules
-- Implement client-side search of product names
+- [ ] Implement client-side search of product names
 
 
 
