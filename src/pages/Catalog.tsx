@@ -5,6 +5,7 @@ import { ADD_ITEMS_TO_CART } from "../mutations";
 import { formatCentsToDollars, placeholderProduct } from "../utils";
 import "../App.css";
 import { SingleProduct } from "../components/SingleProduct";
+import { Cart, CartItem, Product } from '../types';
 
 export const Catalog = ({
   cartId,
@@ -13,7 +14,7 @@ export const Catalog = ({
 }: {
   cartId: string;
   clientMutationId: string;
-  cartData: any;
+  cartData: Cart;
 }) => {
   const { loading, error, data } = useQuery(GET_PRODUCTS);
   const products = data?.products?.nodes;
@@ -25,14 +26,14 @@ export const Catalog = ({
 
   if (error) return <p>Error</p>;
 
-  const findInCart = (productId:any)=>{
-    const productsInCart = cartData?.cart?.cartItems.map((item:any)=>item.product.id);
+  const findInCart = (productId:number|string)=>{
+    const productsInCart = cartData?.cartItems.map((item:CartItem)=>item.product.id);
     return productsInCart.includes(productId);
   }
 
   return (
     <div className="App-product-catalog">
-      {products.map((product: any) => (
+      {products.map((product: Product) => (
         <div className="App-product" key={product["id"]}>
           <div className="App-product-info">
             <div className="App-product-icon">

@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
 import "../App.css";
 import { GET_CART } from "../queries";
+import { CartItem } from '../types';
 import { formatCentsToDollars } from "../utils";
 
 export const NavBar = ({ cartId }: { cartId: string }) => {
@@ -18,7 +19,7 @@ export const NavBar = ({ cartId }: { cartId: string }) => {
   if (returnType !== "Cart") return <p>{data?.cart?.message}</p>;
 
   const cartItemsCount = cartItems?.length
-  const totalCost = cartItems?.reduce((acc: number, cartItem: any) => {
+  const totalCost = cartItems?.reduce((acc: number, cartItem:CartItem ) => {
     return acc + cartItem.quantity * cartItem.product.priceCents;
   }, 0);
 

@@ -40,10 +40,10 @@ function App() {
         {returnType !== "Cart" && <p>{cartData?.cart?.message}</p>}
           <Switch>
             <Route path="/cart">
-              <Cart cartId={cartId} clientMutationId={clientMutationId} cartData={cartData} resetClientMutationId={()=>setClientMutationId(uuidv4())}/>
+              <Cart cartId={cartId} clientMutationId={clientMutationId} cartData={cartData?.cart} resetClientMutationId={()=>setClientMutationId(uuidv4())}/>
             </Route>
             <Route exact path="/">
-              <Catalog cartId={cartId} clientMutationId={clientMutationId} cartData={cartData}/>
+              <Catalog cartId={cartId} clientMutationId={clientMutationId} cartData={cartData?.cart}/>
             </Route>
             <Route path="*">
               <NotFound />

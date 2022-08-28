@@ -2,9 +2,10 @@ import { useMutation } from "@apollo/client";
 import React from "react";
 import "../App.css";
 import {
-  REMOVE_ITEMS_FROM_CART,
-  UPDATE_QUANTITIES_IN_CART,
+    REMOVE_ITEMS_FROM_CART,
+    UPDATE_QUANTITIES_IN_CART
 } from "../mutations";
+import { CartItem } from '../types';
 import { formatCentsToDollars } from "../utils";
 
 export const SingleCartItem = ({
@@ -14,22 +15,11 @@ export const SingleCartItem = ({
 }: {
   cartId: string;
   clientMutationId: string;
-  cartItem: any;
+  cartItem: CartItem;
 }) => {
   const [quantity, setQuantity] = React.useState(cartItem.quantity);
-  const [
-    removeFromCart,
-    {
-      data: removeFromCartRes,
-      loading: removeFromCartLoading,
-      error: removeFromCartError,
-    },
-  ] = useMutation(REMOVE_ITEMS_FROM_CART);
-
-  const [
-    updateCartItemsQuantities,
-    { data: updateCartRes, loading: updateCartLoading, error: updateCartError },
-  ] = useMutation(UPDATE_QUANTITIES_IN_CART);
+  const [removeFromCart] = useMutation(REMOVE_ITEMS_FROM_CART);
+  const [updateCartItemsQuantities] = useMutation(UPDATE_QUANTITIES_IN_CART);
 
   const handleQtyUpdate = (e: any) => {
     updateCartItemsQuantities({
@@ -43,6 +33,7 @@ export const SingleCartItem = ({
     });
     setQuantity(e.target.value);
   };
+
   return (
     <div className="App-product" key={cartItem.product["id"]}>
       <div className="App-product-info">
@@ -58,6 +49,9 @@ export const SingleCartItem = ({
         </div>
       </div>
       <div className="App-product-cart">
+      <div className="App-row">
+          <div className="App-flex">
+          <div className="App-flex-col">
         <div>
           <select value={quantity} onChange={handleQtyUpdate}>
             <option value={1}>1</option>
@@ -72,7 +66,9 @@ export const SingleCartItem = ({
             <option value={10}>10</option>
           </select>
         </div>
-        <button
+
+            <span
+                className="App-product-remove"
           onClick={() => {
             removeFromCart({
               variables: {
@@ -85,13 +81,17 @@ export const SingleCartItem = ({
             });
           }}
         >
-          Remove from cart
-        </button>
+          Remove
+        </span>
+        </div>
+        </div>
+        </div>
         <div>
           {formatCentsToDollars(
             cartItem["quantity"] * cartItem.product["priceCents"]
           )}
-        </div>
+
+      </div>
       </div>
     </div>
   );

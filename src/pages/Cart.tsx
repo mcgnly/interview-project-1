@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client";
 import "../App.css";
 import { SingleCartItem } from "../components/SingleCartItem";
 import { CREATE_ORDER } from "../mutations";
+import { Cart as CartType, CartItem } from '../types';
 import { formatCentsToDollars } from "../utils";
 
 export const Cart = ({
@@ -12,23 +13,19 @@ export const Cart = ({
 }: {
   cartId: string;
   clientMutationId: string;
-  cartData: any;
+  cartData: CartType;
   resetClientMutationId: any;
 }) => {
   const [
     createOrder,
-    {
-      data: createOrderRes,
-      error: createOrderError,
-    },
   ] = useMutation(CREATE_ORDER);
 
-  const cartItems = cartData? cartData.cart?.cartItems:[];
+  const cartItems = cartData? cartData.cartItems:[];
   const totalCents = cartItems
     .map(
-      (cartItem: any) => cartItem["quantity"] * cartItem.product["priceCents"]
+      (cartItem: CartItem) => cartItem["quantity"] * cartItem.product["priceCents"]
     )
-    .reduce((a: any, b: any) => a + b, 0);
+    .reduce((a: number, b: number) => a + b, 0);
 
   const handleCreateOrder = () => {
     createOrder({
@@ -41,19 +38,16 @@ export const Cart = ({
           },
         },
       },
-    });
-
-    if (createOrderRes) {
+    }).then((res) => {
         alert(
-          `Order for ${formatCentsToDollars(
-            totalCents
-          )} created! Thank you for shopping at Katie's Super Cool Coffee. `
-        );
-        resetClientMutationId();
-    }
-    if (createOrderError) {
-      alert(createOrderError.message);
-    }
+            `Order for ${formatCentsToDollars(
+              totalCents
+            )} created! Thank you for shopping at Katie's Super Cool Coffee. `
+          );
+          resetClientMutationId();
+    }).catch((err) => {
+        alert(err.message);
+    });
   };
 
   return (
