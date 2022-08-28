@@ -6,7 +6,7 @@ import { formatCentsToDollars, placeholderProduct } from "../utils";
 import "../App.css";
 import { SingleProduct } from "../components/SingleProduct";
 
-export const Catalog = () => {
+export const Catalog = ({cartId}:{cartId:string}) => {
   const { loading, error, data } = useQuery(GET_PRODUCTS);
   const products = data?.products?.nodes;
   const [

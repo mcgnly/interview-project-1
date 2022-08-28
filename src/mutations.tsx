@@ -4,6 +4,7 @@ export const CREATE_CART = gql`
   mutation CreateCart($createCartInput:CreateCartInput!){
     createCart(input: $createCartInput){
       cart{
+        id
         cartItems{
           product{name, priceCents, imageSrc}
         }
@@ -12,14 +13,31 @@ export const CREATE_CART = gql`
   }
 `;
 
+
+// {
+//     "addToCartInput":{
+//       "clientMutationId": "12345",
+//         "cartId": 96867,
+//         "cartItems": {
+//           "productId": 13334,
+//           "quantity": 1
+//             }
+//         }
+//     }
 export const ADD_ITEMS_TO_CART = gql`
-  mutation AddItemToCart($addItemToCartInput:AddItemToCartInput!){
-    addItemToCart(input: $addItemToCartInput){
-      cart{
-        cartItems{
-          product{name, priceCents, imageSrc}
+  mutation AddToCart($addToCartInput: AddItemsToCartInput!) {
+  addItemsToCart(input: $addToCartInput) {
+    cart {
+      id,
+      cartItems {
+        product {
+          name
+          priceCents
+          imageSrc
+          updatedAt
         }
       }
     }
   }
+}
 `;
