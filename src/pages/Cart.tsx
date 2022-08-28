@@ -5,11 +5,11 @@ import "../App.css";
 import { GET_CART } from "../queries";
 import { SingleProduct } from "../components/SingleProduct";
 
-export const Cart = ({ cartId }: { cartId: string }) => {
+export const Cart = ({cartId, clientMutationId}:{cartId:string, clientMutationId:string}) => {
   const { loading, error, data } = useQuery(GET_CART, {
     variables: { cartId },
   });
-  console.log('data :>> ', data);
+
   const returnType = data?.cart?.__typename;
   const cartItems = data?.cart?.cartItems;
 

@@ -6,7 +6,13 @@ import { formatCentsToDollars, placeholderProduct } from "../utils";
 import "../App.css";
 import { SingleProduct } from "../components/SingleProduct";
 
-export const Catalog = ({cartId}:{cartId:string}) => {
+export const Catalog = ({
+  cartId,
+  clientMutationId,
+}: {
+  cartId: string;
+  clientMutationId: string;
+}) => {
   const { loading, error, data } = useQuery(GET_PRODUCTS);
   const products = data?.products?.nodes;
   const [
@@ -38,8 +44,20 @@ export const Catalog = ({cartId}:{cartId:string}) => {
             <div></div>
             <div>
               <button
+                disabled={addToCartLoading}
                 onClick={() => {
-                  console.log("implement Add to Cart here");
+                  addToCart({
+                    variables: {
+                      addToCartInput: {
+                        clientMutationId,
+                        cartId,
+                        cartItems: {
+                          productId: product["id"],
+                          quantity: 1,
+                        },
+                      },
+                    },
+                  });
                 }}
               >
                 Add to cart

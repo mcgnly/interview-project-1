@@ -13,17 +13,6 @@ export const CREATE_CART = gql`
   }
 `;
 
-
-// {
-//     "addToCartInput":{
-//       "clientMutationId": "12345",
-//         "cartId": 96867,
-//         "cartItems": {
-//           "productId": 13334,
-//           "quantity": 1
-//             }
-//         }
-//     }
 export const ADD_ITEMS_TO_CART = gql`
   mutation AddToCart($addToCartInput: AddItemsToCartInput!) {
   addItemsToCart(input: $addToCartInput) {
