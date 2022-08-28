@@ -17,7 +17,6 @@ export const Catalog = ({
   const products = data?.products?.nodes;
   const [
     addToCart,
-    { data: addToCartRes, loading: addToCartLoading, error: addToCartError },
   ] = useMutation(ADD_ITEMS_TO_CART);
 
   if (loading) return <SingleProduct product={placeholderProduct} />;
@@ -44,7 +43,6 @@ export const Catalog = ({
             <div></div>
             <div>
               <button
-                disabled={addToCartLoading}
                 onClick={() => {
                   addToCart({
                     variables: {

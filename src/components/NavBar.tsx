@@ -17,9 +17,7 @@ export const NavBar = ({ cartId }: { cartId: string }) => {
   if (error) return <p>Error: {error.message}</p>;
   if (returnType !== "Cart") return <p>{data?.cart?.message}</p>;
 
-  const cartItemsCount = cartItems?.reduce((acc: number, cartItem: any) => {
-    return acc + cartItem.quantity;
-  }, 0);
+  const cartItemsCount = cartItems?.length
   const totalCost = cartItems?.reduce((acc: number, cartItem: any) => {
     return acc + cartItem.quantity * cartItem.product.priceCents;
   }, 0);
