@@ -1,4 +1,4 @@
-# Odeko Checkout interview project: Katie McGinley
+# Name-Redacted Checkout interview project: Katie McGinley
 
 ## Instructions
 To run this project, you must generate a client secret from [here](https://secret-shore-94903.herokuapp.com/accounts/2903b0e1-7446-4d3e-9018-901b01d43cb5), or use a previously generated one.

@@ -1,4 +1,4 @@
-# Odeko Checkout interview project
+# Name-Redacted Checkout interview project
 
 ## Project description
 
